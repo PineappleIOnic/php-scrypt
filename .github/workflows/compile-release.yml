@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Releases X86_64
     steps:
+      - uses: actions/checkout@v2
       - name: Install Rust Toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
