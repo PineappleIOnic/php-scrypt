@@ -13,7 +13,7 @@ jobs:
         with: 
           php-version: '8.0'
       - name: Install Rust Toolchain
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
           override: true
