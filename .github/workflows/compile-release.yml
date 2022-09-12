@@ -27,3 +27,11 @@ jobs:
           command: build
           args: --release --target x86_64-unknown-linux-musl
           use-cross: false
+      - uses: actions/upload-artifact@v3
+        with:
+          name: GNU Linux (x86_64)
+          path: target/x86_64-unknown-linux-gnu/release/libphp_scrypt.so
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Alpine Linux (x86_64)
+          path: target/x86_64-unknown-linux-musl/release/libphp_scrypt.so
