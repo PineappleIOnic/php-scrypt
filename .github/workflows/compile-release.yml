@@ -14,7 +14,7 @@ jobs:
           toolchain: stable
           targets: 'x86_64-unknown-linux-gnu, x86_64-unknown-linux-musl, aarch64-unknown-linux-gnu, aarch64-unknown-linux-musl'
       - name: Install Dependencies
-        run: sudo apt-get install musl-tools build-essential clang-11 php8.0-dev gcc-aarch64-linux-gnu
+        run: sudo apt-get install musl-tools build-essential clang-11 php8.0-dev gcc-aarch64-linux-gnu gcc-multilib
       - name: Build Extension (Linux GNU)
         uses: actions-rs/cargo@v1
         with:
