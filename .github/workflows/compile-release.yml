@@ -44,16 +44,12 @@ jobs:
         uses: docker/setup-qemu-action@v1
         with:
           platforms: aarch64
+      - name: Build Docker Image
+        run: docker build -t buildimage .
       - name: Create docker container
-        run: docker create -t -i -v "$(pwd):/app" --platform=linux/aarch64 --name=buildcontainer ubuntu:latest tail -f /dev/null
+        run: docker create -t -i -v "$(pwd):/app" --platform=linux/aarch64 --name=buildcontainer buildimage tail -f /dev/null
       - name: Bring up docker container
         run: docker start buildcontainer
-      - name: Install Dependencies
-        run: docker exec buildcontainer sh -c "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install musl-tools musl-dev build-essential clang-11 php8.1-dev gcc gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu -y"
-      - name: Install Rust
-        run: docker exec buildcontainer sh -c "curl https://sh.rustup.rs -sSf | sh -s -- -y"
-      - name: Install Alpine Toolchain
-        run: docker exec buildcontainer sh -c "PATH=$PATH:/root/.cargo/bin rustup target add aarch64-unknown-linux-musl"
       - name: Build Extension (Linux GNU)
         run: docker exec buildcontainer sh -c "cd /app && PATH=$PATH:/root/.cargo/bin cargo build --release --target aarch64-unknown-linux-gnu"
       - name: Build Extension (Alpine musl)
