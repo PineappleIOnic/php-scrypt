@@ -3,16 +3,16 @@ on: [push]
 env:
   CARGO_TERM_COLOR: always
 jobs:
-  build:
+  build_64:
     runs-on: ubuntu-latest
-    name: Build Linux Releases
+    name: Build Linux Releases (X86_64)
     steps:
       - uses: actions/checkout@v2
       - name: Install Rust Toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-          targets: 'x86_64-unknown-linux-gnu, x86_64-unknown-linux-musl, aarch64-unknown-linux-gnu, aarch64-unknown-linux-musl'
+          targets: 'x86_64-unknown-linux-gnu, x86_64-unknown-linux-musl'
       - name: Install Dependencies
         run: sudo apt-get install musl-tools build-essential clang-11 php8.0-dev
       - name: Build Extension (Linux GNU)
@@ -27,18 +27,6 @@ jobs:
           command: build
           args: --release --target x86_64-unknown-linux-musl
           use-cross: false
-      - name: Build Extension (ARM GNU)
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --target aarch64-unknown-linux-gnu
-          use-cross: true
-      - name: Build Extension (ARM Alpine)
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --target aarch64-unknown-linux-musl
-          use-cross: false
       - uses: actions/upload-artifact@v3
         with:
           name: GNU Linux (x86_64)
@@ -47,3 +35,35 @@ jobs:
         with:
           name: Alpine Linux (x86_64)
           path: target/x86_64-unknown-linux-musl/release/libphp_scrypt.so
+  build_aarch64:
+    runs-on: ubuntu-latest
+    name: Build Linux Releases (AARCH64)
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: 'aarch64-unknown-linux-gnu, aarch64-unknown-linux-musl'
+      - name: Install Dependencies
+        run: sudo apt-get install musl-tools build-essential clang-11 php8.0-dev
+      - name: Build Extension (Linux GNU)
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target aarch64-unknown-linux-gnu
+          use-cross: false
+      - name: Build Extension (Alpine musl)
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target aarch64-unknown-linux-musl
+          use-cross: false
+      - uses: actions/upload-artifact@v3
+        with:
+          name: GNU Linux (aarch64)
+          path: target/aarch64-unknown-linux-gnu/release/libphp_scrypt.so
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Alpine Linux (aarch64)
+          path: target/aarch64-unknown-linux-musl/release/libphp_scrypt.so
