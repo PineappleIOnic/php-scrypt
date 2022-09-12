@@ -7,4 +7,4 @@ passthrough = [
 xargo = false
 build-std = false
 default-target = "x86_64-unknown-linux-gnu"
-pre-build = ["DEBIAN_FRONTEND=noninteractive apt-get install software-properties-common -y && add-apt-repository ppa:ondrej/php && apt update && apt install php8.0-dev -y"] # can also be the path to a file to run
+pre-build = ["DEBIAN_FRONTEND=noninteractive apt-get install software-properties-common -y && add-apt-repository ppa:ondrej/php && apt update && apt install musl-tools build-essential clang-11 php8.0-dev -y"] # can also be the path to a file to run
