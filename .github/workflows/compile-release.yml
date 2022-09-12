@@ -5,14 +5,14 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build Linux Releases X86_64
+    name: Build Linux Releases
     steps:
       - uses: actions/checkout@v2
       - name: Install Rust Toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-          targets: 'x86_64-unknown-linux-gnu, x86_64-unknown-linux-musl'
+          targets: 'x86_64-unknown-linux-gnu, x86_64-unknown-linux-musl, aarch64-unknown-linux-gnu, aarch64-unknown-linux-musl'
       - name: Install Dependencies
         run: sudo apt-get install musl-tools build-essential clang-11 php8.0-dev
       - name: Build Extension (Linux GNU)
@@ -26,6 +26,18 @@ jobs:
         with:
           command: build
           args: --release --target x86_64-unknown-linux-musl
+          use-cross: false
+      - name: Build Extension (ARM GNU)
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target aarch64-unknown-linux-gnu
+          use-cross: false
+      - name: Build Extension (ARM Alpine)
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --target aarch64-unknown-linux-musl
           use-cross: false
       - uses: actions/upload-artifact@v3
         with:
