@@ -49,9 +49,11 @@ jobs:
       - name: Bring up docker container
         run: docker start buildcontainer
       - name: Install Dependencies
-        run: docker compose exec buildcontainer sudo apt-get install musl-tools build-essential clang-11 php8.0-dev gcc gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
+        run: docker exec buildcontainer sh -c "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install musl-tools build-essential clang-11 php8.1-dev gcc gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu -y"
       - name: Install Rust
-        run: docker exec buildcontainer sh -c "curl https://sh.rustup.rs -sSf | sh -s -- -y && PATH=$PATH:/root/.cargo/bin"
+        run: docker exec buildcontainer sh -c "curl https://sh.rustup.rs -sSf | sh -s -- -y"
+      - name: Install Alpine Toolchain
+        run: docker exec buildcontainer sh -c "PATH=$PATH:/root/.cargo/bin rustup target add aarch64-unknown-linux-musl"
       - name: Build Extension (Linux GNU)
         run: docker exec buildcontainer sh -c "cd /app && PATH=$PATH:/root/.cargo/bin cargo build --release --target aarch64-unknown-linux-gnu"
       - name: Build Extension (Alpine musl)
