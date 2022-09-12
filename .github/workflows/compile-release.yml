@@ -14,7 +14,7 @@ jobs:
           toolchain: stable
           targets: 'x86_64-unknown-linux-gnu, x86_64-unknown-linux-musl, aarch64-unknown-linux-gnu, aarch64-unknown-linux-musl'
       - name: Install Dependencies
-        run: sudo apt-get install musl-tools build-essential clang-11 php8.0-dev gcc-aarch64-linux-gnu gcc-multilib
+        run: sudo apt-get install musl-tools build-essential clang-11 php8.0-dev
       - name: Build Extension (Linux GNU)
         uses: actions-rs/cargo@v1
         with:
@@ -32,7 +32,7 @@ jobs:
         with:
           command: build
           args: --release --target aarch64-unknown-linux-gnu
-          use-cross: false
+          use-cross: true
       - name: Build Extension (ARM Alpine)
         uses: actions-rs/cargo@v1
         with:
