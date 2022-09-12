@@ -45,20 +45,20 @@ jobs:
         with:
           toolchain: stable
           targets: 'aarch64-unknown-linux-gnu, aarch64-unknown-linux-musl'
+      - name: Install QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: aarch64
+      - name: Bring up docker container
+        run: docker create -t -i -v "$(pwd):/app" --platform=linux/aarch64 ubuntu:latest sh
       - name: Install Dependencies
-        run: sudo apt-get install musl-tools build-essential clang-11 php8.0-dev gcc-aarch64-linux-gnu
+        run: docker compose exec buildcontainer sudo apt-get install musl-tools build-essential clang-11 php8.0-dev gcc gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
+      - name: Install Rust
+        run: docker exec buildcontainer sh -c "curl https://sh.rustup.rs -sSf | sh -s -- -y && PATH=$PATH:/root/.cargo/bin"
       - name: Build Extension (Linux GNU)
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --target aarch64-unknown-linux-gnu
-          use-cross: false
+        run: docker exec buildcontainer sh -c "cd /app && PATH=$PATH:/root/.cargo/bin cargo build --release --target aarch64-unknown-linux-gnu"
       - name: Build Extension (Alpine musl)
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --target aarch64-unknown-linux-musl
-          use-cross: false
+        run: docker exec buildcontainer sh -c "cd /app && PATH=$PATH:/root/.cargo/bin cargo build --release --target aarch64-unknown-linux-musl"
       - uses: actions/upload-artifact@v3
         with:
           name: GNU Linux (aarch64)
