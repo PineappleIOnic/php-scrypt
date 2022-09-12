@@ -40,17 +40,14 @@ jobs:
     name: Build Linux Releases (AARCH64)
     steps:
       - uses: actions/checkout@v2
-      - name: Install Rust Toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable
-          targets: 'aarch64-unknown-linux-gnu, aarch64-unknown-linux-musl'
       - name: Install QEMU
         uses: docker/setup-qemu-action@v1
         with:
           platforms: aarch64
+      - name: Create docker container
+        run: docker create -t -i -v "$(pwd):/app" --platform=linux/aarch64 --name=buildcontainer ubuntu:latest tail -f /dev/null
       - name: Bring up docker container
-        run: docker create -t -i -v "$(pwd):/app" --platform=linux/aarch64 ubuntu:latest sh
+        run: docker start buildcontainer
       - name: Install Dependencies
         run: docker compose exec buildcontainer sudo apt-get install musl-tools build-essential clang-11 php8.0-dev gcc gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
       - name: Install Rust
