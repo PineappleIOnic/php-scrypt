@@ -44,16 +44,20 @@ jobs:
         uses: docker/setup-qemu-action@v1
         with:
           platforms: aarch64
+      - name: Run Docker on tmpfs
+        uses: JonasAlfredsson/docker-on-tmpfs@v1
+        with:
+          tmpfs_size: 5
+          swap_size: 4
+          swap_location: '/mnt/swapfile'
       - name: Build Docker Image
-        run: docker build -t buildimage .
+        run: docker build --platform=linux/aarch64 -t buildimage .
       - name: Create docker container
         run: docker create -t -i -v "$(pwd):/app" --platform=linux/aarch64 --name=buildcontainer buildimage tail -f /dev/null
       - name: Bring up docker container
         run: docker start buildcontainer
-      - name: Build Extension (Linux GNU)
-        run: docker exec buildcontainer sh -c "cd /app && PATH=$PATH:/root/.cargo/bin cargo build --release --target aarch64-unknown-linux-gnu"
-      - name: Build Extension (Alpine musl)
-        run: docker exec buildcontainer sh -c "cd /app && PATH=$PATH:/root/.cargo/bin cargo build --release --target aarch64-unknown-linux-musl"
+      - name: Build Extension (Linux GNU && Musl)
+        run: docker exec buildcontainer sh -c "cd /app && /scripts/build.sh"
       - uses: actions/upload-artifact@v3
         with:
           name: GNU Linux (aarch64)
