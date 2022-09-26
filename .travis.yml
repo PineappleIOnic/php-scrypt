@@ -1,6 +1,6 @@
 language: rust
 
-dist: bionic
+dist: jammy
 
 arch:
   - amd64
@@ -8,7 +8,7 @@ arch:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install musl-tools build-essential clang php-dev
+  - sudo apt-get install musl-tools build-essential clang php8.1-dev
   - ./helper-scripts/install-toolchain.sh
 
 script:
