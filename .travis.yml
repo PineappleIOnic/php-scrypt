@@ -11,6 +11,7 @@ before_install:
   - sudo apt-get install musl-tools build-essential clang-11 php8.0-dev
 
 script:
+  - echo "Hello World!"
   - ./helper-scripts/build.sh
 
 services:
