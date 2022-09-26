@@ -1,6 +1,6 @@
 language: rust
 
-dist: jammy
+dist: bionic
 
 arch:
   - amd64
