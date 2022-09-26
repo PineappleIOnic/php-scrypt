@@ -56,8 +56,6 @@ jobs:
         run: docker create -t -i -v "$(pwd):/app" --platform=linux/aarch64 --name=buildcontainer buildimage tail -f /dev/null
       - name: Bring up docker container
         run: docker start buildcontainer
-      - name: Install Dependencies
-        run: docker exec buildcontainer apt-get install musl-tools musl-dev build-essential clang-11 php8.1-dev
       - name: Build Extension (Linux GNU && Musl)
         run: docker exec buildcontainer sh -c "cd /app && /scripts/build.sh"
       - uses: actions/upload-artifact@v3
