@@ -1,6 +1,6 @@
 language: rust
 
-dist: bionic
+dist: focal
 
 arch:
   - amd64
