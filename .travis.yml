@@ -9,9 +9,9 @@ arch:
 before_install:
   - sudo apt-get update
   - sudo apt-get install musl-tools build-essential clang-11 php8.1-dev
+  - ./helper-scripts/install-toolchain.sh
 
 script:
-  - echo "Hello World!"
   - ./helper-scripts/build.sh
 
 services:
