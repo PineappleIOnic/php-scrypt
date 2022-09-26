@@ -1,13 +1,12 @@
 language: rust
 
-dist: jammy
+dist: bionic
 
 arch:
   - amd64
   - arm64
 
 before_install:
-  - sudo apt-get update
   - docker build --platform=linux/$TRAVIS_CPU_ARCH -t buildimage .
   - docker create -t -i -v "$(pwd):/app" --platform=linux/amd64 --name=buildcontainer buildimage tail -f /dev/null
   - docker start buildcontainer
