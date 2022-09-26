@@ -1,6 +1,6 @@
 language: rust
 
-dist: xenial
+dist: jammy
 
 arch:
   - amd64
