@@ -8,11 +8,12 @@ arch:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install musl-tools build-essential clang-11 php8.1-dev
-  - ./helper-scripts/install-toolchain.sh
+  - docker build --platform=linux/$TRAVIS_CPU_ARCH -t buildimage .
+  - docker create -t -i -v "$(pwd):/app" --platform=linux/amd64 --name=buildcontainer buildimage tail -f /dev/null
+  - docker start buildcontainer
 
 script:
-  - ./helper-scripts/build.sh
+  - docker exec buildcontainer sh -c "cd /app && /scripts/build.sh"
 
 services:
   - docker
