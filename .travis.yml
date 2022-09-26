@@ -7,6 +7,8 @@ arch:
   - arm64
 
 before_install:
+  - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+  - sudo service docker restart
   - docker build --platform=linux/$TRAVIS_CPU_ARCH -t buildimage .
   - docker create -t -i -v "$(pwd):/app" --platform=linux/amd64 --name=buildcontainer buildimage tail -f /dev/null
   - docker start buildcontainer
