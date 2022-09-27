@@ -17,8 +17,8 @@ before_install:
 script:
 - docker exec buildcontainer sh -c "cd /app && /scripts/build.sh"
 - mkdir -p target/release
-- if [ "$TRAVIS_CPU_ARCH" = "arm64" ]; mv target/aarch64-unknown-linux-gnu/release/libphp_scrypt.so target/release/aarch64_libphp_scrypt.so && mv target/aarch64-unknown-linux-musl/release/libphp_scrypt.so target/release/musl_aarch64_libphp_scrypt.so ; fi
-- if [ "$TRAVIS_CPU_ARCH" = "amd64" ]; mv target/x86_64-unknown-linux-gnu/release/libphp_scrypt.so target/release/libphp_scrypt.so && mv target/x86_64-unknown-linux-musl/release/libphp_scrypt.so target/release/musl_libphp_scrypt.so ; fi
+- if [ "$TRAVIS_CPU_ARCH" = "arm64" ]; then mv target/aarch64-unknown-linux-gnu/release/libphp_scrypt.so target/release/aarch64_libphp_scrypt.so && mv target/aarch64-unknown-linux-musl/release/libphp_scrypt.so target/release/musl_aarch64_libphp_scrypt.so ; fi
+- if [ "$TRAVIS_CPU_ARCH" = "amd64" ]; then mv target/x86_64-unknown-linux-gnu/release/libphp_scrypt.so target/release/libphp_scrypt.so && mv target/x86_64-unknown-linux-musl/release/libphp_scrypt.so target/release/musl_libphp_scrypt.so ; fi
 
 services:
 - docker
