@@ -1,8 +1,5 @@
 # syntax = docker/dockerfile:experimental
-FROM ubuntu:latest as main
-
-# Handle Travis Docker keybug
-RUN gpg --recv-keys 871920D1991BC93C && gpg --export 871920D1991BC93C| apt-key add -
+FROM ubuntu:jammy as main
 
 # Install dependencies
 ENV DEBIAN_FRONTEND=noninteractive
