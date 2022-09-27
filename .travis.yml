@@ -1,16 +1,28 @@
 language: rust
 
-dist: focal
+dist: bionic
 
 arch:
   - amd64
-  - arm64
+
+jobs:
+  include:
+    - compile-x86_64-unknown-linux-gnu:
+      env:
+        - CARGO_BUILD_TARGET=x86_64-unknown-linux-gnu
+        - RUST_BACKTRACE=1
+        - ARCH=amd64
+    - compile-arm64-unknown-linux-gnu:
+      env:
+        - CARGO_BUILD_TARGET=arm64-unknown-linux-gnu
+        - RUST_BACKTRACE=1
+        - ARCH=arm64
 
 before_install:
   - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
   - sudo service docker restart
-  - docker build --platform=linux/$TRAVIS_CPU_ARCH -t buildimage .
-  - docker create -t -i -v "$(pwd):/app" --platform=linux/amd64 --name=buildcontainer buildimage tail -f /dev/null
+  - docker build --platform=linux/$ARCH -t buildimage .
+  - docker create -t -i -v "$(pwd):/app" --platform=linux/$ARCH --name=buildcontainer buildimage tail -f /dev/null
   - docker start buildcontainer
 
 script:
