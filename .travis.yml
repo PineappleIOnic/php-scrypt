@@ -1,35 +1,56 @@
-language: rust
-
+language: minimal
 dist: bionic
-
 arch:
-  - amd64
-  - arm64
-
-# jobs:
-#   include:
-#     - compile-x86_64-unknown-linux-gnu:
-#       env:
-#         - CARGO_BUILD_TARGET=x86_64-unknown-linux-gnu
-#         - RUST_BACKTRACE=1
-#         - ARCH=amd64
-#     - compile-arm64-unknown-linux-gnu:
-#       env:
-#         - CARGO_BUILD_TARGET=arm64-unknown-linux-gnu
-#         - RUST_BACKTRACE=1
-#         - ARCH=arm64
-
+- amd64
+- arm64
 before_install:
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  - sudo add-apt-repository "deb [arch=$TRAVIS_CPU_ARCH] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  - sudo apt-get update
-  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
-  - docker build --platform=linux/$TRAVIS_CPU_ARCH -t buildimage .
-  - docker create -t -i -v "$(pwd):/app" --platform=linux/$TRAVIS_CPU_ARCH --name=buildcontainer buildimage tail -f /dev/null
-  - docker start buildcontainer
-
+- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+- sudo add-apt-repository "deb [arch=$TRAVIS_CPU_ARCH] https://download.docker.com/linux/ubuntu
+  $(lsb_release -cs) stable"
+- sudo apt-get update
+- sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+- docker build --platform=linux/$TRAVIS_CPU_ARCH -t buildimage .
+- docker create -t -i -v "$(pwd):/app" --platform=linux/$TRAVIS_CPU_ARCH --name=buildcontainer
+  buildimage tail -f /dev/null
+- docker start buildcontainer
 script:
-  - docker exec buildcontainer sh -c "cd /app && /scripts/build.sh"
-
+- docker exec buildcontainer sh -c "cd /app && /scripts/build.sh"
 services:
-  - docker
+- docker
+deploy:
+  - provider: releases
+    api_key:
+      secure: mplF9LL7NQc2UFKepn7BhZ0LrEM/FmAG7OlRNqgiPQ8T8rw/vsWt88G/w1Yvjcm5KLdNC7M4BNOtNQiAwqPj/kMMONglWez/BOXr8j+w9g2l2xOgmopGTqxEJXWvB3sFrW8oP3kwqCBlBL7SG9Q5kW/lDU/aN5mD4BRPvgPgVhNaIvASVzyvP3K9YsId8UqRb6pfqbtaxPscX+t5ooClRK2DLpVnrPXAHMxqQli4Zi0e2gtj0Aw7AxbJKwwVhkyPshxw/VC/W0isUQ1ZV8qIZaQflJEeBy6XKW7PWwRU8xswM28Ee1BDsQOOnJyUE3kB7fT0llrBUNaFxXqWHydfv4W8sBL89wL/0GIEI9QigLUOnpmhW49uy+uVyN7HX78N+X/wGG5EKvZiYNPjroe2FUXV8+YAe+1DtuANgrjRIKkbL4eSg26WtshkvqhreMMVnZpQHO/Q5+Qc/t9LsNzTva97x6ovIRRCwn/4a1jUUGAbPWlN3N5ll/H6HnAxqX7NYRA6bsOQ/EIz+rHiTg7F9YTUTBCU2eXgEiWnuw/BOR4EUjJtMXYD++8ObmjgdTV7mt+iphWdddLsDxfye/gwdEwrR159gjA93hx7Q7czYDA1ye70PmMF3ghChHToN9Q6uWaL0NUiuVWSzOb98qme7XqyqHMy0KL2TJBU1L3Rju0=
+    file: target/aarch64-unknown-linux-gnu/release/libphp_scrypt.so
+    on:
+      repo: PineappleIOnic/php-scrypt
+      branch: feat-add-github-actions
+      condition: $TRAVIS_CPU_ARCH = arm64
+    skip_cleanup: 'true'
+  - provider: releases
+    api_key:
+      secure: mplF9LL7NQc2UFKepn7BhZ0LrEM/FmAG7OlRNqgiPQ8T8rw/vsWt88G/w1Yvjcm5KLdNC7M4BNOtNQiAwqPj/kMMONglWez/BOXr8j+w9g2l2xOgmopGTqxEJXWvB3sFrW8oP3kwqCBlBL7SG9Q5kW/lDU/aN5mD4BRPvgPgVhNaIvASVzyvP3K9YsId8UqRb6pfqbtaxPscX+t5ooClRK2DLpVnrPXAHMxqQli4Zi0e2gtj0Aw7AxbJKwwVhkyPshxw/VC/W0isUQ1ZV8qIZaQflJEeBy6XKW7PWwRU8xswM28Ee1BDsQOOnJyUE3kB7fT0llrBUNaFxXqWHydfv4W8sBL89wL/0GIEI9QigLUOnpmhW49uy+uVyN7HX78N+X/wGG5EKvZiYNPjroe2FUXV8+YAe+1DtuANgrjRIKkbL4eSg26WtshkvqhreMMVnZpQHO/Q5+Qc/t9LsNzTva97x6ovIRRCwn/4a1jUUGAbPWlN3N5ll/H6HnAxqX7NYRA6bsOQ/EIz+rHiTg7F9YTUTBCU2eXgEiWnuw/BOR4EUjJtMXYD++8ObmjgdTV7mt+iphWdddLsDxfye/gwdEwrR159gjA93hx7Q7czYDA1ye70PmMF3ghChHToN9Q6uWaL0NUiuVWSzOb98qme7XqyqHMy0KL2TJBU1L3Rju0=
+    file: target/aarch64-unknown-linux-musl/release/libphp_scrypt.so
+    on:
+      repo: PineappleIOnic/php-scrypt
+      branch: feat-add-github-actions
+      condition: $TRAVIS_CPU_ARCH = arm64
+    skip_cleanup: 'true'
+  - provider: releases
+    api_key:
+      secure: mplF9LL7NQc2UFKepn7BhZ0LrEM/FmAG7OlRNqgiPQ8T8rw/vsWt88G/w1Yvjcm5KLdNC7M4BNOtNQiAwqPj/kMMONglWez/BOXr8j+w9g2l2xOgmopGTqxEJXWvB3sFrW8oP3kwqCBlBL7SG9Q5kW/lDU/aN5mD4BRPvgPgVhNaIvASVzyvP3K9YsId8UqRb6pfqbtaxPscX+t5ooClRK2DLpVnrPXAHMxqQli4Zi0e2gtj0Aw7AxbJKwwVhkyPshxw/VC/W0isUQ1ZV8qIZaQflJEeBy6XKW7PWwRU8xswM28Ee1BDsQOOnJyUE3kB7fT0llrBUNaFxXqWHydfv4W8sBL89wL/0GIEI9QigLUOnpmhW49uy+uVyN7HX78N+X/wGG5EKvZiYNPjroe2FUXV8+YAe+1DtuANgrjRIKkbL4eSg26WtshkvqhreMMVnZpQHO/Q5+Qc/t9LsNzTva97x6ovIRRCwn/4a1jUUGAbPWlN3N5ll/H6HnAxqX7NYRA6bsOQ/EIz+rHiTg7F9YTUTBCU2eXgEiWnuw/BOR4EUjJtMXYD++8ObmjgdTV7mt+iphWdddLsDxfye/gwdEwrR159gjA93hx7Q7czYDA1ye70PmMF3ghChHToN9Q6uWaL0NUiuVWSzOb98qme7XqyqHMy0KL2TJBU1L3Rju0=
+    file: target/x86_64-unknown-linux-gnu/release/libphp_scrypt.so
+    on:
+      repo: PineappleIOnic/php-scrypt
+      branch: feat-add-github-actions
+      condition: $TRAVIS_CPU_ARCH = amd64
+    skip_cleanup: 'true'
+  - provider: releases
+    api_key:
+      secure: mplF9LL7NQc2UFKepn7BhZ0LrEM/FmAG7OlRNqgiPQ8T8rw/vsWt88G/w1Yvjcm5KLdNC7M4BNOtNQiAwqPj/kMMONglWez/BOXr8j+w9g2l2xOgmopGTqxEJXWvB3sFrW8oP3kwqCBlBL7SG9Q5kW/lDU/aN5mD4BRPvgPgVhNaIvASVzyvP3K9YsId8UqRb6pfqbtaxPscX+t5ooClRK2DLpVnrPXAHMxqQli4Zi0e2gtj0Aw7AxbJKwwVhkyPshxw/VC/W0isUQ1ZV8qIZaQflJEeBy6XKW7PWwRU8xswM28Ee1BDsQOOnJyUE3kB7fT0llrBUNaFxXqWHydfv4W8sBL89wL/0GIEI9QigLUOnpmhW49uy+uVyN7HX78N+X/wGG5EKvZiYNPjroe2FUXV8+YAe+1DtuANgrjRIKkbL4eSg26WtshkvqhreMMVnZpQHO/Q5+Qc/t9LsNzTva97x6ovIRRCwn/4a1jUUGAbPWlN3N5ll/H6HnAxqX7NYRA6bsOQ/EIz+rHiTg7F9YTUTBCU2eXgEiWnuw/BOR4EUjJtMXYD++8ObmjgdTV7mt+iphWdddLsDxfye/gwdEwrR159gjA93hx7Q7czYDA1ye70PmMF3ghChHToN9Q6uWaL0NUiuVWSzOb98qme7XqyqHMy0KL2TJBU1L3Rju0=
+    file: target/x86_64-unknown-linux-musl/release/libphp_scrypt.so
+    on:
+      repo: PineappleIOnic/php-scrypt
+      branch: feat-add-github-actions
+      condition: $TRAVIS_CPU_ARCH = amd64
+    skip_cleanup: 'true'
