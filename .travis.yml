@@ -9,6 +9,7 @@ before_install:
   $(lsb_release -cs) stable"
 - sudo apt-get update
 - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+- sudo systemctl start docker
 - docker build --platform=linux/$TRAVIS_CPU_ARCH -t buildimage .
 - docker create -t -i -v "$(pwd):/app" --platform=linux/$TRAVIS_CPU_ARCH --name=buildcontainer
   buildimage tail -f /dev/null
@@ -21,6 +22,7 @@ script:
 
 services:
 - docker
+
 deploy:
   - provider: releases
     api_key:
