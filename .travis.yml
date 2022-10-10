@@ -1,4 +1,4 @@
-language: minimal
+language: shell
 dist: bionic
 arch:
 - amd64
@@ -25,38 +25,38 @@ services:
 
 deploy:
   - provider: releases
-    api_key:
+    token:
       secure: mplF9LL7NQc2UFKepn7BhZ0LrEM/FmAG7OlRNqgiPQ8T8rw/vsWt88G/w1Yvjcm5KLdNC7M4BNOtNQiAwqPj/kMMONglWez/BOXr8j+w9g2l2xOgmopGTqxEJXWvB3sFrW8oP3kwqCBlBL7SG9Q5kW/lDU/aN5mD4BRPvgPgVhNaIvASVzyvP3K9YsId8UqRb6pfqbtaxPscX+t5ooClRK2DLpVnrPXAHMxqQli4Zi0e2gtj0Aw7AxbJKwwVhkyPshxw/VC/W0isUQ1ZV8qIZaQflJEeBy6XKW7PWwRU8xswM28Ee1BDsQOOnJyUE3kB7fT0llrBUNaFxXqWHydfv4W8sBL89wL/0GIEI9QigLUOnpmhW49uy+uVyN7HX78N+X/wGG5EKvZiYNPjroe2FUXV8+YAe+1DtuANgrjRIKkbL4eSg26WtshkvqhreMMVnZpQHO/Q5+Qc/t9LsNzTva97x6ovIRRCwn/4a1jUUGAbPWlN3N5ll/H6HnAxqX7NYRA6bsOQ/EIz+rHiTg7F9YTUTBCU2eXgEiWnuw/BOR4EUjJtMXYD++8ObmjgdTV7mt+iphWdddLsDxfye/gwdEwrR159gjA93hx7Q7czYDA1ye70PmMF3ghChHToN9Q6uWaL0NUiuVWSzOb98qme7XqyqHMy0KL2TJBU1L3Rju0=
     file: target/release/aarch64_libphp_scrypt.so
     on:
       repo: PineappleIOnic/php-scrypt
       branch: feat-add-github-actions
       condition: $TRAVIS_CPU_ARCH = arm64
-    skip_cleanup: 'true'
+    cleanup: 'false' 
   - provider: releases
-    api_key:
+    token:
       secure: mplF9LL7NQc2UFKepn7BhZ0LrEM/FmAG7OlRNqgiPQ8T8rw/vsWt88G/w1Yvjcm5KLdNC7M4BNOtNQiAwqPj/kMMONglWez/BOXr8j+w9g2l2xOgmopGTqxEJXWvB3sFrW8oP3kwqCBlBL7SG9Q5kW/lDU/aN5mD4BRPvgPgVhNaIvASVzyvP3K9YsId8UqRb6pfqbtaxPscX+t5ooClRK2DLpVnrPXAHMxqQli4Zi0e2gtj0Aw7AxbJKwwVhkyPshxw/VC/W0isUQ1ZV8qIZaQflJEeBy6XKW7PWwRU8xswM28Ee1BDsQOOnJyUE3kB7fT0llrBUNaFxXqWHydfv4W8sBL89wL/0GIEI9QigLUOnpmhW49uy+uVyN7HX78N+X/wGG5EKvZiYNPjroe2FUXV8+YAe+1DtuANgrjRIKkbL4eSg26WtshkvqhreMMVnZpQHO/Q5+Qc/t9LsNzTva97x6ovIRRCwn/4a1jUUGAbPWlN3N5ll/H6HnAxqX7NYRA6bsOQ/EIz+rHiTg7F9YTUTBCU2eXgEiWnuw/BOR4EUjJtMXYD++8ObmjgdTV7mt+iphWdddLsDxfye/gwdEwrR159gjA93hx7Q7czYDA1ye70PmMF3ghChHToN9Q6uWaL0NUiuVWSzOb98qme7XqyqHMy0KL2TJBU1L3Rju0=
     file: target/release/musl_aarch64_libphp_scrypt.so
     on:
       repo: PineappleIOnic/php-scrypt
       branch: feat-add-github-actions
       condition: $TRAVIS_CPU_ARCH = arm64
-    skip_cleanup: 'true'
+    cleanup: 'false' 
   - provider: releases
-    api_key:
+    token:
       secure: mplF9LL7NQc2UFKepn7BhZ0LrEM/FmAG7OlRNqgiPQ8T8rw/vsWt88G/w1Yvjcm5KLdNC7M4BNOtNQiAwqPj/kMMONglWez/BOXr8j+w9g2l2xOgmopGTqxEJXWvB3sFrW8oP3kwqCBlBL7SG9Q5kW/lDU/aN5mD4BRPvgPgVhNaIvASVzyvP3K9YsId8UqRb6pfqbtaxPscX+t5ooClRK2DLpVnrPXAHMxqQli4Zi0e2gtj0Aw7AxbJKwwVhkyPshxw/VC/W0isUQ1ZV8qIZaQflJEeBy6XKW7PWwRU8xswM28Ee1BDsQOOnJyUE3kB7fT0llrBUNaFxXqWHydfv4W8sBL89wL/0GIEI9QigLUOnpmhW49uy+uVyN7HX78N+X/wGG5EKvZiYNPjroe2FUXV8+YAe+1DtuANgrjRIKkbL4eSg26WtshkvqhreMMVnZpQHO/Q5+Qc/t9LsNzTva97x6ovIRRCwn/4a1jUUGAbPWlN3N5ll/H6HnAxqX7NYRA6bsOQ/EIz+rHiTg7F9YTUTBCU2eXgEiWnuw/BOR4EUjJtMXYD++8ObmjgdTV7mt+iphWdddLsDxfye/gwdEwrR159gjA93hx7Q7czYDA1ye70PmMF3ghChHToN9Q6uWaL0NUiuVWSzOb98qme7XqyqHMy0KL2TJBU1L3Rju0=
     file: target/release/libphp_scrypt.so
     on:
       repo: PineappleIOnic/php-scrypt
       branch: feat-add-github-actions
       condition: $TRAVIS_CPU_ARCH = amd64
-    skip_cleanup: 'true'
+    cleanup: 'false' 
   - provider: releases
-    api_key:
+    token:
       secure: mplF9LL7NQc2UFKepn7BhZ0LrEM/FmAG7OlRNqgiPQ8T8rw/vsWt88G/w1Yvjcm5KLdNC7M4BNOtNQiAwqPj/kMMONglWez/BOXr8j+w9g2l2xOgmopGTqxEJXWvB3sFrW8oP3kwqCBlBL7SG9Q5kW/lDU/aN5mD4BRPvgPgVhNaIvASVzyvP3K9YsId8UqRb6pfqbtaxPscX+t5ooClRK2DLpVnrPXAHMxqQli4Zi0e2gtj0Aw7AxbJKwwVhkyPshxw/VC/W0isUQ1ZV8qIZaQflJEeBy6XKW7PWwRU8xswM28Ee1BDsQOOnJyUE3kB7fT0llrBUNaFxXqWHydfv4W8sBL89wL/0GIEI9QigLUOnpmhW49uy+uVyN7HX78N+X/wGG5EKvZiYNPjroe2FUXV8+YAe+1DtuANgrjRIKkbL4eSg26WtshkvqhreMMVnZpQHO/Q5+Qc/t9LsNzTva97x6ovIRRCwn/4a1jUUGAbPWlN3N5ll/H6HnAxqX7NYRA6bsOQ/EIz+rHiTg7F9YTUTBCU2eXgEiWnuw/BOR4EUjJtMXYD++8ObmjgdTV7mt+iphWdddLsDxfye/gwdEwrR159gjA93hx7Q7czYDA1ye70PmMF3ghChHToN9Q6uWaL0NUiuVWSzOb98qme7XqyqHMy0KL2TJBU1L3Rju0=
     file: target/release/musl_libphp_scrypt.so
     on:
       repo: PineappleIOnic/php-scrypt
       branch: feat-add-github-actions
       condition: $TRAVIS_CPU_ARCH = amd64
-    skip_cleanup: 'true'
+    cleanup: 'false' 
