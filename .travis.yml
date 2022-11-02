@@ -1,8 +1,14 @@
-language: shell
+language: rust
 dist: bionic
 arch:
 - amd64
-- arm64
+
+jobs:
+  include:
+    - env: BUILD_TARGET=amd64
+    - env: BUILD_TARGET=arm64
+    - env: BUILD_TARGET=armhf
+
 before_install:
 - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 - sudo add-apt-repository "deb [arch=$TRAVIS_CPU_ARCH] https://download.docker.com/linux/ubuntu
@@ -10,15 +16,16 @@ before_install:
 - sudo apt-get update
 - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
 - sudo systemctl start docker
-- docker build --platform=linux/$TRAVIS_CPU_ARCH -t buildimage .
-- docker create -t -i -v "$(pwd):/app" --platform=linux/$TRAVIS_CPU_ARCH --name=buildcontainer
-  buildimage tail -f /dev/null
-- docker start buildcontainer
 script:
-- docker exec buildcontainer sh -c "cd /app && /scripts/build.sh"
+- cargo vendor
+- docker build --platform=linux/$BUILD_TARGET -t buildimage .
+- docker create -t -i -v "$(pwd):/app" --platform=linux/$BUILD_TARGET --name=buildcontainer buildimage tail -f /dev/null
+- docker start buildcontainer
+- docker exec buildcontainer uname -m
+- docker exec buildcontainer /bin/bash -c "cd /app && ./build.sh"
 - mkdir -p target/release
-- if [ "$TRAVIS_CPU_ARCH" = "arm64" ]; then sudo mv target/aarch64-unknown-linux-gnu/release/libphp_scrypt.so target/release/aarch64_libphp_scrypt.so && sudo mv target/aarch64-unknown-linux-musl/release/libphp_scrypt.so target/release/musl_aarch64_libphp_scrypt.so ; fi
-- if [ "$TRAVIS_CPU_ARCH" = "amd64" ]; then sudo mv target/x86_64-unknown-linux-gnu/release/libphp_scrypt.so target/release/libphp_scrypt.so && sudo mv target/x86_64-unknown-linux-musl/release/libphp_scrypt.so target/release/musl_libphp_scrypt.so ; fi
+- if [ "$BUILD_TARGET" = "arm64" ]; then sudo mv target/aarch64-unknown-linux-gnu/release/libphp_scrypt.so target/release/aarch64_libphp_scrypt.so && sudo mv target/aarch64-unknown-linux-musl/release/libphp_scrypt.so target/release/musl_aarch64_libphp_scrypt.so ; fi
+- if [ "$BUILD_TARGET" = "amd64" ]; then sudo mv target/x86_64-unknown-linux-gnu/release/libphp_scrypt.so target/release/libphp_scrypt.so && sudo mv target/x86_64-unknown-linux-musl/release/libphp_scrypt.so target/release/musl_libphp_scrypt.so ; fi
 
 services:
 - docker
@@ -31,7 +38,7 @@ deploy:
     on:
       repo: PineappleIOnic/php-scrypt
       branch: feat-add-github-actions
-      condition: $TRAVIS_CPU_ARCH = arm64
+      condition: $BUILD_TARGET = arm64
     cleanup: 'false' 
   - provider: releases
     token:
@@ -40,7 +47,7 @@ deploy:
     on:
       repo: PineappleIOnic/php-scrypt
       branch: feat-add-github-actions
-      condition: $TRAVIS_CPU_ARCH = arm64
+      condition: $BUILD_TARGET = arm64
     cleanup: 'false' 
   - provider: releases
     token:
@@ -49,7 +56,7 @@ deploy:
     on:
       repo: PineappleIOnic/php-scrypt
       branch: feat-add-github-actions
-      condition: $TRAVIS_CPU_ARCH = amd64
+      condition: $BUILD_TARGET = amd64
     cleanup: 'false' 
   - provider: releases
     token:
@@ -58,5 +65,5 @@ deploy:
     on:
       repo: PineappleIOnic/php-scrypt
       branch: feat-add-github-actions
-      condition: $TRAVIS_CPU_ARCH = amd64
+      condition: $BUILD_TARGET = amd64
     cleanup: 'false' 

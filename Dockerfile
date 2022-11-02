@@ -1,9 +1,11 @@
 # syntax = docker/dockerfile:experimental
-FROM ubuntu:jammy as main
+FROM --platform=$BUILDPLATFORM ubuntu:jammy as main
+
+ARG TARGETPLATFORM
 
 # Install dependencies
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install musl-tools build-essential clang-11 php8.1-dev gcc gcc-aarch64-linux-gnu -y
+RUN apt-get update && apt-get install musl-tools build-essential clang-11 php8.1-dev gcc -y
 
 # Install Rust
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -17,3 +19,5 @@ COPY helper-scripts/install-toolchain.sh .
 RUN ./install-toolchain.sh
 
 COPY helper-scripts/build.sh .
+
+COPY ./vendor ./vendor
